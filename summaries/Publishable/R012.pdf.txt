@@ -1,0 +1,15 @@
+**Title:** Safe Predictors for Input-Output Specification Enforcement
+
+**Abstract:** This paper proposes a method for designing neural networks and other machine learning models that satisfy input-output specifications.  It constructs a constrained predictor for each set of compatible constraints and safely combines them using a convex combination.  The method's effectiveness is demonstrated using synthetic datasets and an aircraft collision avoidance problem.
+
+**Introduction:**  The increasing use of machine learning in safety-critical applications necessitates guarantees on safety and robustness.  Models often need to meet specific input-output specifications and exhibit adversarial robustness. While methods exist to verify if a network meets specifications (e.g., Reluplex), they don't guarantee satisfaction. This paper introduces a method to design networks that inherently meet constraints *before* training, enabling safe online learning.
+
+**Methodology:** The method involves defining input and output spaces and a collection of input-output constraints.  It creates a partition of the input space based on constraint combinations. For each partition, a constrained predictor is built.  Weighting functions, based on proximity functions (measuring distance to constraint regions), combine these predictors into a safe predictor. The safe predictor is guaranteed to satisfy the constraints due to the convexity of the output constraint regions and the construction of the weighting functions.  The proximity functions are learned, and standard optimization techniques can be applied to train the model while maintaining safety guarantees.  The method uses a convex combination of predictors, allowing it to handle overlapping constraints.
+
+**Results:** The approach is tested on synthetic datasets (details in Appendix B) and a simplified aircraft collision avoidance problem (VerticalCAS, details in Appendix C).  In the VerticalCAS experiment, a comparison between a standard unconstrained network and the safe predictor shows that the safe predictor adheres to the "safeability" property (no unsafe advisories) without sacrificing accuracy.  (Table 1 shows accuracy and violation rates for both networks on two datasets).
+
+**Conclusion:** The paper presents a novel approach for designing safe predictors that enforce input-output specifications. Its simplicity and guaranteed constraint satisfaction throughout training are highlighted. Future work includes integrating optimization techniques, control barrier functions, and adversarial robustness considerations.
+
+**Relationship between sections:** The Introduction establishes the problem and motivates the need for the proposed solution. The Methodology details the proposed method. The Results section demonstrates the method's effectiveness through experiments.  The Conclusion summarizes the findings and outlines future directions.  The Appendices provide supplementary information, including a proof of the key theorem and details of the experiments.
+
+**Conference Type:** NeurIPS
