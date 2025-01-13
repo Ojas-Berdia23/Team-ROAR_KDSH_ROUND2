@@ -33,17 +33,18 @@ def get_test_data(path):
         print(e)              
     
     
-def validate():
+def validate(file):
     test_data = pd.read_csv("../test.csv")
     prediction_data = pd.read_csv("../prediction.csv").drop(columns=['Rationale'])
     
     data = pd.DataFrame(pd.merge(test_data,prediction_data,on='Paper ID'))
     
-    publishable_accuracy = accuracy_score(data["Publishable_ACTUAL"], data["Publishable"])
+    publishable_accuracy = accuracy_score(data["Publishable_ACTUAL"], data["Publishable"])*100
     publishable_f1 = f1_score(data["Publishable_ACTUAL"], data["Publishable"])
-    conference_accuracy = (data["Conference_ACTUAL"] == data["Conference"]).mean()
-
-    print(data)
+    conference_accuracy = (data["Conference_ACTUAL"] == data["Conference"]).mean()*100
+    print(publishable_accuracy)
+    print(publishable_f1)
+    print(conference_accuracy)
     # with open(file,'w') as f:
         
 if __name__=='__main__':
