@@ -1,18 +1,10 @@
 ﻿# Team ROAR
 
-A brief description of your project.
+The manual evaluation of research papers for conference submission is a labor-intensive and subjective process. This project addresses this challenge by developing AI-driven systems using advanced language models, comparative analysis techniques, and real-time data frameworks. The proposed solution involves two major tasks:
 
-## Features
+Research Paper Publishability Assessment: Classifying research papers as "Publishable" or "Non-Publishable" based on quality and content.
 
-- List key features of the project.
-- Highlight what makes it unique.
-
-## Prerequisites
-
-Make sure you have the following installed:
-
-- Python 3.8 or above
-- pip (Python package installer)
+Conference Selection: Recommending suitable conferences for "Publishable" papers with a formal justification.
 
 ## Installation
 
