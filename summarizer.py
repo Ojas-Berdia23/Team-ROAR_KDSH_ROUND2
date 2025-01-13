@@ -3,7 +3,7 @@ from google import generativeai as genai
 
 class Summarizer:
     def __init__(self):
-        genai.configure(api_key="AIzaSyBREK5SLs-4aKvtrlElrfUXRfhOMwKh0m8")
+        genai.configure(api_key="API_KEY")
         self.model = genai.GenerativeModel("gemini-1.5-flash")
 
     def make_prediction(self, paper):

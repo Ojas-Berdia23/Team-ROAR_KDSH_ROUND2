@@ -21,7 +21,7 @@ def get_test_data(path):
                     conference = os.path.basename(root).lower()
                 for file in files:
                     if file.endswith(".pdf"):  # Assuming research papers are PDF files
-                        with open('../test.csv','w',newline='',encoding='UTF-8') as csvfile:
+                        with open('./test.csv','w',newline='',encoding='UTF-8') as csvfile:
                             writer = csv.writer(csvfile)
                             if csvfile.tell()==0:
                                 writer.writerow(['Paper ID', 'Publishable_ACTUAL', 'Conference_ACTUAL'])
@@ -35,8 +35,8 @@ def get_test_data(path):
     
 def validate(file):
 
-    test_data = pd.read_csv("../test.csv")
-    prediction_data = pd.read_csv("../prediction.csv").drop(columns=['Rationale'])
+    test_data = pd.read_csv("./test.csv")
+    prediction_data = pd.read_csv("./prediction.csv").drop(columns=['Rationale'])
     
     data = pd.DataFrame(pd.merge(test_data,prediction_data,on='Paper ID'))
     
@@ -64,6 +64,6 @@ if __name__=='__main__':
     # get_test_data("../KDSH_2025_Dataset/Reference")
     # print("done getting file info")
     
-    validate("../accuracy.txt")
+    validate("./accuracy.txt")
     
     

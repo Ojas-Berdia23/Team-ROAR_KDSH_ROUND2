@@ -113,10 +113,10 @@ def make_prediction(file, csv_file):
 
 
 if __name__ == '__main__':
-    data_path = "../KDSH_2025_Dataset/Papers"
-    result_csv_path = "../result.csv"
-    prediction_data_path = "../KDSH_2025_Dataset/Reference"
-    prediction_csv_path = '../prediction.csv'
+    data_path = "./KDSH_2025_Dataset/Papers"
+    result_csv_path = "./result.csv"
+    prediction_data_path = "./KDSH_2025_Dataset/Reference"
+    prediction_csv_path = './prediction.csv'
     
     # Get list of files
     files = get_files(data_path)
