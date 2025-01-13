@@ -98,7 +98,7 @@ def make_prediction(file, csv_file):
         paper_id = file['file_name'][:-4] # This assigns the paper's filename as its ID
 
         # Append the prediction to the CSV file
-        with open(csv_file, 'a', newline='', encoding='UTF-8') as csvfile:
+        with open(csv_file, 'w', newline='', encoding='UTF-8') as csvfile:
             writer = csv.writer(csvfile)
             
             # Ensure header is written only once
@@ -122,13 +122,13 @@ if __name__ == '__main__':
     files = get_files(data_path)
     
     
-    # prediction_file = get_files(prediction_data_path)
+    prediction_file = get_files(prediction_data_path)
     
     
     # for cross validation 
-    # for file in prediction_file:
-        # make_prediction(file,prediction_csv_path)
+    for file in prediction_file:
+        make_prediction(file,prediction_csv_path)
     
-    # Process each file and generate predictions
+    Process each file and generate predictions
     for file in files:
         make_prediction(file, result_csv_path)

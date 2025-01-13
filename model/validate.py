@@ -21,7 +21,7 @@ def get_test_data(path):
                     conference = os.path.basename(root).lower()
                 for file in files:
                     if file.endswith(".pdf"):  # Assuming research papers are PDF files
-                        with open('../test.csv','a',newline='',encoding='UTF-8') as csvfile:
+                        with open('../test.csv','w',newline='',encoding='UTF-8') as csvfile:
                             writer = csv.writer(csvfile)
                             if csvfile.tell()==0:
                                 writer.writerow(['Paper ID', 'Publishable_ACTUAL', 'Conference_ACTUAL'])
@@ -33,31 +33,30 @@ def get_test_data(path):
         print(e)              
     
     
-<<<<<<< HEAD
 def validate(file):
-=======
-def validate():
->>>>>>> parent of 699c6e7 (Revert "added features")
+
     test_data = pd.read_csv("../test.csv")
     prediction_data = pd.read_csv("../prediction.csv").drop(columns=['Rationale'])
     
     data = pd.DataFrame(pd.merge(test_data,prediction_data,on='Paper ID'))
     
-<<<<<<< HEAD
-    publishable_accuracy = accuracy_score(data["Publishable_ACTUAL"], data["Publishable"])*100
+    publishable_accuracy = accuracy_score(data["Publishable_ACTUAL"], data["Publishable"])
     publishable_f1 = f1_score(data["Publishable_ACTUAL"], data["Publishable"])
-    conference_accuracy = (data["Conference_ACTUAL"] == data["Conference"]).mean()*100
+    conference_accuracy = (data["Conference_ACTUAL"] == data["Conference"]).mean()
     print(publishable_accuracy)
     print(publishable_f1)
     print(conference_accuracy)
-=======
     publishable_accuracy = accuracy_score(data["Publishable_ACTUAL"], data["Publishable"])
     publishable_f1 = f1_score(data["Publishable_ACTUAL"], data["Publishable"])
     conference_accuracy = (data["Conference_ACTUAL"] == data["Conference"]).mean()
 
     print(data)
->>>>>>> parent of 699c6e7 (Revert "added features")
-    # with open(file,'w') as f:
+    with open(file,'w') as file:
+        file.write(f"""
+                   Publishable Accuracy: {publishable_accuracy*100}
+                   Publishable F1 Score: {publishable_f1}
+                   Conference Accuracy: {publishable_accuracy*100}
+                   """)
         
 if __name__=='__main__':
     
@@ -65,6 +64,6 @@ if __name__=='__main__':
     # get_test_data("../KDSH_2025_Dataset/Reference")
     # print("done getting file info")
     
-    validate()
+    validate("../accuracy.txt")
     
     
