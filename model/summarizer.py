@@ -1,35 +1,56 @@
-import json 
+import json
 from google import generativeai as genai
 
-
 class Summarizer:
-    
     def __init__(self):
         genai.configure(api_key="API_KEY")
         self.model = genai.GenerativeModel("gemini-1.5-flash")
-    
-    def generate_summary(self,paper,conference):
- 
-        if conference == "nan":
-            conference_info = "Conference: nan"
-        else:
-            conference_info = f"Conference Type: {conference}"
-        
+
+    def make_prediction(self, paper):
         return self.model.generate_content(
-             f"""
-        Please summarize this research paper concisely, ensuring all existing sections such as Title, Abstract, Introduction, Methodology, Results, and Conclusion are included. 
-        Keep the summary detailed but not overly long, summarizing each section individually while preserving key information. 
-        Do not attempt to complete or add missing sections, and avoid mentioning missing sections explicitly. 
-        Additionally, provide a brief description of how the sections relate to each other and at last add a section to specify the conference type from the research paper conference key just give the name if its 'no conference' just keep it as 'no conference' and dont add any other text or explanantion there.
-        
-        {paper}
-        
-        {conference_info}
-        
-        """
+            f"""
+            You are tasked with evaluating a research paper and determining whether it is **Publishable** or **Non-Publishable**. Additionally, if the paper is **Publishable**, you must recommend the most suitable conference from the following list:of coferences **CVPR**, **NeurIPS**, **DAA**, **EMNLP**, **TMLR**,**KDD**.
+
+            ### Instructions:
+            1. **Classify the paper**:
+                - If **Non-Publishable**, return:
+                  - `"status": "non-publishable"`
+                  - `"type": "na"`
+                  - `"reason": "<brief explanation of why it's non-publishable>"` (no more than 100 words). This may include lack of novelty, poor methodology, insufficient data, or irrelevance.
+
+                - If **Publishable**, return:
+                  - `"status": "publishable"`
+                  - `"type": "<conference name (CVPR, NeurIPS, DAA, EMNLP, TMLR, KDD)>"`
+                  - `"reason": "<short explanation of why it fits the conference, no more than 100 words>"`. This includes relevance to the field, novelty, technical rigor, or alignment with the conference's scope.
+
+            ### Example Conference Types and Descriptions:
+            - **CVPR**: Focuses on Computer Vision, Image Processing, and related topics.
+            - **NeurIPS**: Covers Machine Learning, Artificial Intelligence, and related disciplines.
+            - **DAA**: Specializes in Data Science and Algorithms.
+            - **EMNLP**: Focuses on Natural Language Processing and related research.
+            - **TMLR**: Deals with Machine Learning theory and research.
+            - **KDD**: Focuses on Knowledge Discovery and Data Mining.
+
+            ### Example Responses:
+            For a **Publishable** paper:
+            ```json
+            {{
+                "status": "publishable",
+                "type": "CVPR",
+                "reason": "Introduces a novel approach to 3D image recognition, fitting CVPR's focus on computer vision."
+            }}
+            ```
+
+            For a **Non-Publishable** paper:
+            ```json
+            {{
+                "status": "non-publishable",
+                "type": "na",
+                "reason": "The paper lacks original contributions and sufficient experimental validation."
+            }}
+            ```
+
+            ### Research Paper Text:
+            {paper}
+            """
         ).text
-
-
-
-if __name__=='__main__':
-    Summarizer()

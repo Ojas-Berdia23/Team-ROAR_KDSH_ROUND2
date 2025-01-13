@@ -1,10 +1,12 @@
 import json
 import fitz
 import os
+import csv
 from summarizer import Summarizer
+import re
 
 
-
+summary_model = Summarizer()
 
 def get_text_from_pdf(path):
     try:
@@ -41,49 +43,92 @@ def get_files(base_path):
                         "conference": conference,
                         "file_path": os.path.join(root, file),
                         "file_name": file
+                        
                     })
+                    
     return all_files
 
+def predict(text):
+    try:
+        summary_content = summary_model.make_prediction(text)
+        start = summary_content.index('{')
+        end = summary_content.index('}')
+        print('summary',summary_content[start:end+1])
 
-def create_summary_file(file):
-    file_type = file['p_type']
-    file_name = f"{file['file_name']}.txt"
+        summary_content = summary_content[start:end+1]
+        
+        # Log the model output before parsing
+        
+        # Parse the summary content (expected to be a JSON string) into a dictionary
+        prediction = json.loads(summary_content)
+
+        # Extract the status, type (conference), and reason from the prediction
+        status = 1 if prediction.get('status') == "publishable" else 0
+        conference = prediction.get('type', 'na').lower()
+        rationale = prediction.get('reason', 'na')
+        return [status,conference,rationale]
+    
+    except Exception as e:
+        print(f"Error while making prediction for file {e}")
+
+def make_prediction(file, csv_file):
     content_path = file['file_path']
     paper_content = get_text_from_pdf(content_path)
-    conference = file['conference']
-    if not os.path.exists(summary_path):
-        os.mkdir('../summaries')
+    
+    try:
+        summary_content = summary_model.make_prediction(paper_content)
+        start = summary_content.index('{')
+        end = summary_content.index('}')
+        print('summary',summary_content[start:end+1])
 
-    if not os.path.exists('../summaries/Non-publishable') and not os.path.exists('../summaries/Publishable'):
-        os.makedirs(os.path.join(summary_path, "Publishable"), exist_ok=True)
-        os.makedirs(os.path.join(summary_path, "Non-publishable"), exist_ok=True)
+        summary_content = summary_content[start:end+1]
+        
+        # Log the model output before parsing
+        print(f"Model output for {file['file_name']}: {summary_content}")
+        
+        # Parse the summary content (expected to be a JSON string) into a dictionary
+        prediction = json.loads(summary_content)
 
-    if file_type == 'publishable':
-        dir = os.path.join(summary_path, 'Publishable')
-    else:
-        dir = os.path.join(summary_path, 'Non-publishable')
+        # Extract the status, type (conference), and reason from the prediction
+        status = 1 if prediction.get('status') == "publishable" else 0
+        conference = prediction.get('type', 'na').lower()
+        rationale = prediction.get('reason', 'na')
 
-    os.makedirs(dir, exist_ok=True)
+        # Using file['file_name'] as paper_id
+        paper_id = file['file_name'][:-4] # This assigns the paper's filename as its ID
 
-    file_path = os.path.join(dir, file_name)
+        # Append the prediction to the CSV file
+        with open(csv_file, 'a', newline='', encoding='UTF-8') as csvfile:
+            writer = csv.writer(csvfile)
+            
+            # Ensure header is written only once
+            if csvfile.tell() == 0:
+                writer.writerow(['Paper ID', 'Publishable', 'Conference', 'Rationale'])
 
-    if os.path.exists(file_path):
-        print(f'File: "{file_path}" Exist')
-    else:
-        try:
-            summary_content = summary_model.generate_summary(paper_content,conference)
-            with open(file_path, 'w', encoding='UTF-8') as f:
-                f.write(summary_content)
-                print('File written')
-        except Exception as e:
-            print(f'{e} Occurred')
+            writer.writerow([paper_id, status, conference, rationale])
+            print(f'Prediction written for {file["file_name"]}')
+    except Exception as e:
+        print(f"Error while making prediction for {file['file_name']}: {e}")
+
 
 
 if __name__ == '__main__':
+    data_path = "../KDSH_2025_Dataset/Papers"
+    result_csv_path = "../result.csv"
+    prediction_data_path = "../KDSH_2025_Dataset/Reference"
+    prediction_csv_path = '../prediction.csv'
     
-    data_path = "../KDSH_2025_Dataset/Reference"
-    summary_path = "../summaries"
+    # Get list of files
     files = get_files(data_path)
-    summary_model = Summarizer()
+    
+    
+    # prediction_file = get_files(prediction_data_path)
+    
+    
+    # for cross validation 
+    # for file in prediction_file:
+        # make_prediction(file,prediction_csv_path)
+    
+    # Process each file and generate predictions
     for file in files:
-        create_summary_file(file)
+        make_prediction(file, result_csv_path)
