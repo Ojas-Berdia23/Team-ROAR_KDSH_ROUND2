@@ -33,18 +33,30 @@ def get_test_data(path):
         print(e)              
     
     
+<<<<<<< HEAD
 def validate(file):
+=======
+def validate():
+>>>>>>> parent of 699c6e7 (Revert "added features")
     test_data = pd.read_csv("../test.csv")
     prediction_data = pd.read_csv("../prediction.csv").drop(columns=['Rationale'])
     
     data = pd.DataFrame(pd.merge(test_data,prediction_data,on='Paper ID'))
     
+<<<<<<< HEAD
     publishable_accuracy = accuracy_score(data["Publishable_ACTUAL"], data["Publishable"])*100
     publishable_f1 = f1_score(data["Publishable_ACTUAL"], data["Publishable"])
     conference_accuracy = (data["Conference_ACTUAL"] == data["Conference"]).mean()*100
     print(publishable_accuracy)
     print(publishable_f1)
     print(conference_accuracy)
+=======
+    publishable_accuracy = accuracy_score(data["Publishable_ACTUAL"], data["Publishable"])
+    publishable_f1 = f1_score(data["Publishable_ACTUAL"], data["Publishable"])
+    conference_accuracy = (data["Conference_ACTUAL"] == data["Conference"]).mean()
+
+    print(data)
+>>>>>>> parent of 699c6e7 (Revert "added features")
     # with open(file,'w') as f:
         
 if __name__=='__main__':
